@@ -24,7 +24,7 @@ function Footer() {
           </p> */}
           <div className="flex flex-col sm:flex-col items-center justify-center gap-4 text-sm">
             <div>
-              <p>© 2025 Mısır Cafe. Tüm hakları saklıdır.</p>
+              <p>© 2026 Mısır Cafe. Tüm hakları saklıdır.</p>
             </div>
             <p>
               Designed by{" "}
