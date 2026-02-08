@@ -1,5 +1,6 @@
 import { addEventType } from "@/types/event.type";
 import { supabase } from "../client";
+import { deleteImage } from "./images.functions";
 
 export const addEvent = async (values: addEventType) => {
   const { data, error } = await supabase
@@ -40,26 +41,9 @@ export const deleteEvent = async (id: string) => {
     if (fetchError) throw fetchError;
     if (!event) throw new Error("Event bulunamadı");
 
-    // 2️⃣ Eğer image_url varsa Storage’dan sil
+    // 2️⃣ Eğer image_url varsa Storage'dan sil
     if (event.image_url) {
-      try {
-        const url = new URL(event.image_url);
-        // pathname: /storage/v1/object/public/event/event/1756307258668.png
-        // bucket ismi: "event", dosya path: "event/1756307258668.png"
-        const parts = url.pathname.split("/");
-        const bucketIndex = parts.findIndex((p) => p === "event");
-        if (bucketIndex === -1) throw new Error("Bucket bulunamadı URL'den");
-
-        const filePath = parts.slice(bucketIndex).join("/"); // event/1756307258668.png
-
-        const { error: deleteError } = await supabase.storage
-          .from("event")
-          .remove([filePath]);
-
-        if (deleteError) console.error("Storage silme hatası:", deleteError);
-      } catch (err) {
-        console.error("Resim silme sırasında hata:", err);
-      }
+      await deleteImage(event.image_url);
     }
 
     // 3️⃣ Event tablosundan sil
