@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
+import sharp from "sharp";
 
 const ADMIN_UID = "ddbecd32-7273-4a16-bbc1-cabb7935b06d";
 
@@ -110,14 +111,21 @@ export async function POST(req: Request) {
     // Uygun bucket'ı bul (doluysa yenisini oluştur)
     const bucketName = await findAvailableBucket(type as ImageType);
 
-    // Dosya adını oluştur
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}.${fileExt}`;
+    // Gelen dosyayı WebP'ye dönüştür (quality 80 → %40-70 daha küçük dosya)
+    const arrayBuffer = await file.arrayBuffer();
+    const inputBuffer = Buffer.from(arrayBuffer);
 
-    // Yükle
+    const webpBuffer = await sharp(inputBuffer)
+      .webp({ quality: 80 })
+      .toBuffer();
+
+    // Dosya adını .webp uzantısıyla oluştur
+    const fileName = `${Date.now()}.webp`;
+
+    // WebP olarak yükle
     const { error: uploadError } = await supabaseAdmin.storage
       .from(bucketName)
-      .upload(fileName, file);
+      .upload(fileName, webpBuffer, { contentType: "image/webp" });
 
     if (uploadError) {
       return NextResponse.json(
