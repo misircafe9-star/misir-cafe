@@ -16,26 +16,14 @@ export const getMenu = async () => {
 };
 
 export const getCategoriesWithItems = async (): Promise<MenuCategory[]> => {
-  const { data: categories, error } = await supabase
+  const { data, error } = await supabase
     .from("categories")
-    .select("*") // description, image_url, title, id, sort_order gibi tüm alanlar
-    .order("sort_order", { ascending: true });
+    .select("*, items:menu_items(*)")
+    .order("sort_order", { ascending: true })
+    .order("sort_order", { ascending: true, referencedTable: "menu_items" });
 
   if (error) throw error;
-
-  const categoriesWithItems = await Promise.all(
-    categories.map(async (cat) => {
-      const { data: items } = await supabase
-        .from("menu_items")
-        .select("*")
-        .eq("category_id", cat.id)
-        .order("sort_order", { ascending: true });
-
-      return { ...cat, items: items || [] } as MenuCategory;
-    })
-  );
-
-  return categoriesWithItems;
+  return (data || []) as unknown as MenuCategory[];
 };
 
 export const getSpecialMenus = async () => {

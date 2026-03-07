@@ -7,6 +7,7 @@ import { Search, Star } from "lucide-react";
 import Header from "@/components/header";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { getOptimizedImageUrl } from "@/utils/supabase/image";
 import Footer from "@/components/footer";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -206,13 +207,19 @@ export default function MenuPage() {
                       >
                         {/* Category Header */}
                         <div className="relative h-48 sm:h-64 overflow-hidden">
-                          <motion.img
-                            src={category.image_url || "/placeholder.svg"}
-                            alt={category.title}
-                            className="w-full h-full object-cover"
+                          <motion.div
+                            className="relative w-full h-full"
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.6 }}
-                          />
+                          >
+                            <Image
+                              src={getOptimizedImageUrl(category.image_url, 800)}
+                              alt={category.title}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
+                          </motion.div>
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                           <motion.div
                             className="absolute bottom-6 left-6 text-white"
@@ -327,7 +334,7 @@ export default function MenuPage() {
                           className="relative overflow-hidden rounded-t-xl bg-white"
                         >
                           <Image
-                            src={menu.image_url || "/placeholder.svg"}
+                            src={getOptimizedImageUrl(menu.image_url, 600)}
                             alt={menu.name}
                             width={600}
                             height={800}

@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npx next build:*)",
       "Bash(npm run build:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(xargs grep -l \"supabase.co\")",
+      "Bash(xargs cat)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(node_modules/.bin/next build)"
     ]
   }
 }

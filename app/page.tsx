@@ -7,6 +7,7 @@ import Link from "next/link";
 import Header from "@/components/header";
 import { motion, useMotionValue, useAnimationFrame } from "framer-motion";
 import Image from "next/image";
+import { getOptimizedImageUrl } from "@/utils/supabase/image";
 import Footer from "@/components/footer";
 import { SpecialMenu } from "@/types/special-menu.type";
 import { getSpecialMenus } from "@/utils/supabase/functions/ui.functions";
@@ -142,7 +143,7 @@ export default function HomePage() {
                   <div className="bg-white/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 border-0 shadow-lg rounded-t-2xl overflow-hidden w-64 h-64">
                     <Image
                       alt={item.name}
-                      src={item.image_url}
+                      src={getOptimizedImageUrl(item.image_url, 256)}
                       width={256}
                       height={256}
                       className="w-full h-full object-contain"
